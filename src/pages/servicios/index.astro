@@ -1,0 +1,201 @@
+---
+// src/pages/servicios/index.astro
+import Layout from '../../layouts/Layout.astro';
+import { productData, type ProductCategory } from '../../data/products';
+
+// Definir servicios con iconos SVG
+const servicios: Array<{
+  tipo: ProductCategory;
+  iconPath: string;
+}> = [
+  { 
+    tipo: 'residencial-jardin', 
+    iconPath: 'M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25'
+  },
+  { 
+    tipo: 'residencial-terraza', 
+    iconPath: 'M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z'
+  },
+  { 
+    tipo: 'piscinas', 
+    iconPath: 'M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6z'
+  },
+  { 
+    tipo: 'comercial', 
+    iconPath: 'M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z'
+  },
+  { 
+    tipo: 'deportivo', 
+    iconPath: 'M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0'
+  },
+  { 
+    tipo: 'eventos', 
+    iconPath: 'M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z'
+  },
+  { 
+    tipo: 'institucional', 
+    iconPath: 'M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5'
+  },
+  { 
+    tipo: 'funcional', 
+    iconPath: 'M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z'
+  },
+];
+
+const pageTitle = 'Servicios de Césped Artificial en Barcelona | CespedBCN';
+const pageDescription = 'Servicios especializados de césped artificial: jardines, terrazas, piscinas, comercial, deportivo, eventos e institucional. Presupuesto gratis en Barcelona.';
+---
+
+<Layout title={pageTitle}>
+
+  <!-- Hero -->
+  <header class="relative bg-slate-900 text-white py-20 overflow-hidden">
+    <!-- Imagen de fondo -->
+    <div class="absolute inset-0">
+      <img 
+        src="/contrasting-outdoor-texture-design.jpg" 
+        alt="" 
+        class="w-full h-full object-cover opacity-30"
+      />
+    </div>
+    
+    <!-- Contenido -->
+    <div class="relative max-w-6xl mx-auto px-4 text-center">
+      <h1 class="text-4xl md:text-5xl font-black mb-4">
+        Nuestros <span class="text-green-400">Servicios</span>
+      </h1>
+      <p class="text-xl text-slate-300 max-w-2xl mx-auto">
+        Soluciones especializadas de césped artificial para cada necesidad. 
+        Desde jardines residenciales hasta instalaciones deportivas profesionales.
+      </p>
+    </div>
+</header>
+
+  <main class="max-w-6xl mx-auto px-4 py-12">
+
+    <!-- Grid de servicios -->
+    <div class="grid md:grid-cols-2 gap-6">
+      {servicios.map(({ tipo, iconPath }) => {
+        const product = productData[tipo];
+        return (
+          <a 
+            href={`/servicios/${tipo}`}
+            class="group bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl hover:border-green-300 transition-all duration-300"
+          >
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-green-200 transition-colors">
+                <svg class="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d={iconPath} />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h2 class="text-xl font-bold text-slate-900 group-hover:text-green-600 transition mb-2">
+                  {product.title}
+                </h2>
+                <p class="text-slate-600 text-sm mb-4 line-clamp-2">
+                  {product.subtitle}
+                </p>
+                
+                <div class="flex items-center gap-4 text-sm">
+                  <span class="text-slate-500">
+                    Desde <strong class="text-green-600">{product.pricing.basePrice}€/m²</strong>
+                  </span>
+                  <span class="text-slate-400">|</span>
+                  <span class="text-slate-500">
+                    Garantía {product.technicalSpecs.garantiaFabrica}
+                  </span>
+                </div>
+              </div>
+              <svg class="w-6 h-6 text-slate-300 group-hover:text-green-600 group-hover:translate-x-1 transition-all shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+              </svg>
+            </div>
+
+            <!-- Usos principales -->
+            <div class="mt-4 pt-4 border-t border-gray-100">
+              <div class="flex flex-wrap gap-2">
+                {product.useCases.slice(0, 3).map((useCase) => (
+                  <span class="bg-gray-100 text-slate-600 text-xs px-2 py-1 rounded">
+                    {useCase}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+
+    <!-- Comparativa rápida -->
+    <section class="mt-16">
+      <h2 class="text-2xl font-bold text-slate-900 mb-6 text-center">Comparativa de servicios</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-bold text-slate-900">Servicio</th>
+              <th class="text-center p-4 font-bold text-slate-900">Precio/m²</th>
+              <th class="text-center p-4 font-bold text-slate-900">Garantía</th>
+              <th class="text-center p-4 font-bold text-slate-900">Instalación</th>
+              <th class="text-center p-4 font-bold text-slate-900">Ahorro/año</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            {servicios.map(({ tipo, iconPath }) => {
+              const product = productData[tipo];
+              return (
+                <tr class="hover:bg-gray-50 transition">
+                  <td class="p-4">
+                    <a href={`/servicios/${tipo}`} class="flex items-center gap-3 font-medium text-slate-900 hover:text-green-600 transition">
+                      <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
+                        <svg class="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d={iconPath} />
+                        </svg>
+                      </div>
+                      <span class="truncate max-w-[200px]">{product.title.replace('Césped Artificial ', '')}</span>
+                    </a>
+                  </td>
+                  <td class="p-4 text-center">
+                    <span class="font-bold text-green-600">{product.pricing.basePrice}-{product.pricing.premiumPrice}€</span>
+                  </td>
+                  <td class="p-4 text-center text-slate-600">
+                    {product.technicalSpecs.garantiaFabrica}
+                  </td>
+                  <td class="p-4 text-center text-slate-600 text-sm">
+                    {product.installationTime}
+                  </td>
+                  <td class="p-4 text-center">
+                    <span class="font-bold text-green-600">{product.pricing.savingsVsNatural}€</span>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="mt-16 bg-slate-900 rounded-2xl p-8 md:p-12 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+        ¿No sabes qué servicio necesitas?
+      </h2>
+      <p class="text-slate-300 mb-8 max-w-xl mx-auto">
+        Te asesoramos gratis. Cuéntanos tu proyecto y te recomendamos la mejor solución.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="tel:934850085" class="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-500 transition">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+          </svg>
+          934 850 085
+        </a>
+        <a href="mailto:ventas@disstands.com" class="inline-flex items-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition">
+          ventas@disstands.com
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+</Layout>

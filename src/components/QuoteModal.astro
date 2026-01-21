@@ -1,0 +1,137 @@
+---
+// src/components/QuoteModal.astro
+---
+
+<div id="quote-modal" class="fixed inset-0 z-[9999] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  
+    <div id="modal-backdrop" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity opacity-0 cursor-pointer"></div>
+  
+    <div class="fixed inset-0 z-10 overflow-y-auto">
+      <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        
+        <div id="modal-panel" class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+          
+          <button type="button" id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition focus:outline-none z-20">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+          </button>
+  
+          <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+            <div class="text-center sm:text-left">
+              <h3 class="text-2xl font-black leading-6 text-slate-900 mb-2" id="modal-title">Solicitar Presupuesto</h3>
+              <div class="mt-2">
+                <p class="text-sm text-gray-500 mb-6">
+                  Déjanos tus datos y te contactaremos en menos de 24h.
+                </p>
+  
+                <form 
+                    name="popup-presupuesto" 
+                    method="POST" 
+                    data-netlify="true"
+                    class="space-y-4 text-left"
+                >
+                    <input type="hidden" name="form-name" value="popup-presupuesto" />
+  
+                    <div>
+                        <label for="modal-nombre" class="block text-xs font-bold text-gray-700 uppercase mb-1">Nombre</label>
+                        <input type="text" name="nombre" id="modal-nombre" required class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-2 focus:ring-green-500 focus:outline-none transition" placeholder="Tu nombre completo">
+                    </div>
+  
+                    <div>
+                        <label for="modal-telefono" class="block text-xs font-bold text-gray-700 uppercase mb-1">Teléfono</label>
+                        <input type="tel" name="telefono" id="modal-telefono" required class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-2 focus:ring-green-500 focus:outline-none transition" placeholder="600 000 000">
+                    </div>
+  
+                    <div>
+                        <label for="modal-tipo" class="block text-xs font-bold text-gray-700 uppercase mb-1">Soy...</label>
+                        <select name="tipo_cliente" id="modal-tipo" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-2 focus:ring-green-500 focus:outline-none transition appearance-none">
+                            <option value="particular">Particular (Casa/Terraza)</option>
+                            <option value="profesional">Profesional (Instalador/Empresa)</option>
+                        </select>
+                    </div>
+  
+                    <div>
+                        <label for="modal-mensaje" class="block text-xs font-bold text-gray-700 uppercase mb-1">Mensaje (Opcional)</label>
+                        <textarea name="mensaje" id="modal-mensaje" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-2 focus:ring-green-500 focus:outline-none transition" placeholder="¿Cuántos m² necesitas aprox?"></textarea>
+                    </div>
+  
+                    <button type="submit" class="w-full bg-green-600 text-white font-bold py-4 rounded-xl hover:bg-green-700 transition shadow-lg shadow-green-600/30 mt-2">
+                        Enviar Solicitud
+                    </button>
+                    
+                    <p class="text-[10px] text-center text-gray-400 mt-2">
+                        Tus datos están protegidos y no serán compartidos.
+                    </p>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script is:inline>
+    document.addEventListener('astro:page-load', () => {
+      // Si usas ViewTransitions, esto asegura que cargue siempre.
+      // Si no, se ejecuta normal al cargar el DOM.
+      initModal();
+    });
+  
+    // Ejecutar también al inicio normal
+    document.addEventListener('DOMContentLoaded', initModal);
+  
+    function initModal() {
+      const modal = document.getElementById('quote-modal');
+      const backdrop = document.getElementById('modal-backdrop');
+      const panel = document.getElementById('modal-panel');
+      const closeBtn = document.getElementById('close-modal-btn');
+      
+      // 1. ABRIR MODAL
+      // Buscamos TODOS los botones que tengan la clase 'open-modal-btn'
+      const triggers = document.querySelectorAll('.open-modal-btn');
+      
+      triggers.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault(); // Evita que salte el ancla #contacto
+          openModal();
+        });
+      });
+  
+      // 2. CERRAR MODAL
+      if(closeBtn) closeBtn.addEventListener('click', closeModal);
+      if(backdrop) backdrop.addEventListener('click', closeModal); // Clic fuera cierra
+      
+      // Clic en ESC cierra
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+          closeModal();
+        }
+      });
+  
+      function openModal() {
+        if(!modal) return;
+        modal.classList.remove('hidden');
+        // Pequeño timeout para permitir la transición de opacidad
+        setTimeout(() => {
+          backdrop.classList.remove('opacity-0');
+          panel.classList.remove('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
+          panel.classList.add('opacity-100', 'translate-y-0', 'sm:scale-100');
+        }, 10);
+      }
+  
+      function closeModal() {
+        if(!modal) return;
+        // Animación de salida
+        backdrop.classList.add('opacity-0');
+        panel.classList.remove('opacity-100', 'translate-y-0', 'sm:scale-100');
+        panel.classList.add('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
+        
+        // Esperar a que acabe la transición para ocultar el div
+        setTimeout(() => {
+          modal.classList.add('hidden');
+        }, 300); // 300ms coincide con duration-300 de tailwind
+      }
+    }
+  </script>

@@ -1,0 +1,417 @@
+---
+// src/pages/productos/[slug]/index.astro
+import Layout from '../../../layouts/Layout.astro';
+import { catalogProducts, getProductBySlug, type CatalogProduct } from '../../../data/catalog';
+
+export async function getStaticPaths() {
+  return catalogProducts
+    .filter(p => p.isActive)
+    .map((product) => ({
+      params: { slug: product.slug },
+      props: { product }
+    }));
+}
+
+interface Props {
+  product: CatalogProduct;
+}
+
+const { product } = Astro.props;
+
+// Productos relacionados (misma categoría, excluyendo el actual)
+const relatedProducts = catalogProducts
+  .filter(p => p.isActive && p.category === product.category && p.id !== product.id)
+  .slice(0, 3);
+
+// Si no hay suficientes de la misma categoría, añadir de otras
+const otherProducts = relatedProducts.length < 3 
+  ? catalogProducts.filter(p => p.isActive && p.id !== product.id && !relatedProducts.includes(p)).slice(0, 3 - relatedProducts.length)
+  : [];
+
+const allRelated = [...relatedProducts, ...otherProducts];
+
+const pageTitle = product.metaTitle;
+const pageDescription = product.metaDescription;
+
+// Calcular precio del rollo
+const rollPriceMin = product.rollFormat.totalSqm * product.priceMin;
+const rollPriceMax = product.rollFormat.totalSqm * product.priceMax;
+---
+
+<Layout title={pageTitle}>
+
+  <!-- Breadcrumbs -->
+  <nav class="bg-gray-50 border-b border-gray-200">
+    <div class="max-w-6xl mx-auto px-4 py-3">
+      <ol class="flex items-center gap-2 text-sm text-gray-600">
+        <li><a href="/" class="hover:text-green-600 transition">Inicio</a></li>
+        <li><span class="text-gray-400">/</span></li>
+        <li><a href="/productos" class="hover:text-green-600 transition">Productos</a></li>
+        <li><span class="text-gray-400">/</span></li>
+        <li class="text-gray-900 font-medium">{product.shortName}</li>
+      </ol>
+    </div>
+  </nav>
+
+  <main class="max-w-6xl mx-auto px-4 py-8 md:py-12">
+
+    <!-- Hero del producto -->
+    <section class="grid lg:grid-cols-2 gap-8 lg:gap-12 mb-16">
+      
+      <!-- Imagen / Visual -->
+      <div class="relative">
+        <div class="aspect-square bg-gradient-to-br from-green-100 to-green-50 rounded-2xl overflow-hidden flex items-center justify-center sticky top-24">
+          <span class="text-[120px] md:text-[180px] font-black text-green-200/80">{product.height}mm</span>
+          
+          <!-- Badges -->
+          <div class="absolute top-4 left-4 flex flex-wrap gap-2">
+            {product.isFeatured && (
+              <span class="bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase shadow-lg">
+                ⭐ Popular
+              </span>
+            )}
+            {product.isNew && (
+              <span class="bg-blue-500 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase shadow-lg">
+                Nuevo
+              </span>
+            )}
+          </div>
+
+          <!-- Categoría -->
+          <div class="absolute top-4 right-4">
+            <span class="bg-white/90 backdrop-blur text-slate-700 text-xs font-bold px-3 py-1.5 rounded-full uppercase shadow">
+              {product.category}
+            </span>
+          </div>
+
+          <!-- Colores disponibles -->
+          {product.variants.length > 1 && (
+            <div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur rounded-xl p-3 shadow-lg">
+              <p class="text-xs font-bold text-slate-500 mb-2 uppercase">Colores disponibles</p>
+              <div class="flex flex-wrap gap-2">
+                {product.variants.map((variant) => (
+                  <div class="flex items-center gap-2 bg-white rounded-lg px-2 py-1 border border-gray-200">
+                    <span 
+                      class="w-5 h-5 rounded-full border border-gray-300 shrink-0" 
+                      style={`background-color: ${variant.colorHex || '#4a7c59'}`}
+                    />
+                    <span class="text-xs font-medium text-slate-700">{variant.color}</span>
+                    <span class="text-xs text-slate-400">{variant.pricePerSqm}€/m²</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <!-- Info del producto -->
+      <div>
+        <div class="mb-6">
+          <p class="text-sm font-bold text-green-600 uppercase tracking-wider mb-2">
+            Césped Artificial {product.height}mm
+          </p>
+          <h1 class="text-3xl md:text-4xl font-black text-slate-900 mb-3">
+            {product.name}
+          </h1>
+          <p class="text-lg text-slate-600">
+            {product.headline}
+          </p>
+        </div>
+
+        <!-- Precio -->
+        <div class="bg-green-50 border border-green-200 rounded-xl p-5 mb-6">
+          <div class="flex items-end gap-2 mb-2">
+            <span class="text-4xl font-black text-green-600">{product.priceMin}€</span>
+            <span class="text-slate-500 text-lg mb-1">/m²</span>
+            {product.priceMin !== product.priceMax && (
+              <span class="text-slate-400 text-lg mb-1">- {product.priceMax}€/m²</span>
+            )}
+          </div>
+          <p class="text-sm text-slate-600">
+            Rollo completo ({product.rollFormat.totalSqm}m²): 
+            <span class="font-bold">{rollPriceMin.toFixed(2)}€</span>
+            {rollPriceMin !== rollPriceMax && (
+              <span> - {rollPriceMax.toFixed(2)}€</span>
+            )}
+          </p>
+        </div>
+
+        <!-- Formato -->
+        <div class="grid grid-cols-3 gap-3 mb-6">
+          <div class="bg-slate-50 rounded-xl p-4 text-center">
+            <span class="block text-2xl font-bold text-slate-900">{product.rollFormat.length}m</span>
+            <span class="text-xs text-slate-500">Largo rollo</span>
+          </div>
+          <div class="bg-slate-50 rounded-xl p-4 text-center">
+            <span class="block text-2xl font-bold text-slate-900">{product.rollFormat.width}m</span>
+            <span class="text-xs text-slate-500">Ancho</span>
+          </div>
+          <div class="bg-slate-50 rounded-xl p-4 text-center">
+            <span class="block text-2xl font-bold text-slate-900">{product.rollFormat.totalSqm}m²</span>
+            <span class="text-xs text-slate-500">Por rollo</span>
+          </div>
+        </div>
+
+        <!-- Características rápidas -->
+        <div class="flex flex-wrap gap-2 mb-6">
+          {product.uvProtection && (
+            <span class="inline-flex items-center gap-1.5 bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1.5 rounded-full">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+              </svg>
+              Protección UV
+            </span>
+          )}
+          {product.drainageSystem && (
+            <span class="inline-flex items-center gap-1.5 bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1.5 rounded-full">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+              </svg>
+              Drenaje
+            </span>
+          )}
+          {product.petFriendly && (
+            <span class="inline-flex items-center gap-1.5 bg-green-100 text-green-700 text-xs font-bold px-3 py-1.5 rounded-full">
+              🐕 Pet Friendly
+            </span>
+          )}
+          {product.childSafe && (
+            <span class="inline-flex items-center gap-1.5 bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1.5 rounded-full">
+              👶 Apto niños
+            </span>
+          )}
+          {product.leadFree && (
+            <span class="inline-flex items-center gap-1.5 bg-teal-100 text-teal-700 text-xs font-bold px-3 py-1.5 rounded-full">
+              ✓ Sin plomo
+            </span>
+          )}
+          {product.fireRetardant && (
+            <span class="inline-flex items-center gap-1.5 bg-red-100 text-red-700 text-xs font-bold px-3 py-1.5 rounded-full">
+              🔥 Ignífugo
+            </span>
+          )}
+        </div>
+
+        <!-- Garantía -->
+        <div class="flex items-center gap-3 bg-slate-900 text-white rounded-xl p-4 mb-6">
+          <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center shrink-0">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+            </svg>
+          </div>
+          <div>
+            <p class="font-bold text-lg">{product.warranty} años de garantía</p>
+            <p class="text-sm text-slate-300">Garantía de fábrica incluida</p>
+          </div>
+        </div>
+
+        <!-- CTAs -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <a 
+            href="tel:934850085" 
+            class="flex-1 inline-flex items-center justify-center gap-2 bg-green-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-green-500 transition text-lg"
+          >
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+            </svg>
+            934 850 085
+          </a>
+          <a 
+            href="mailto:ventas@disstands.com" 
+            class="flex-1 inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-slate-800 transition"
+          >
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+            </svg>
+            Pedir presupuesto
+          </a>
+        </div>
+
+        <!-- Info corte a medida -->
+        {product.customCutAvailable && (
+          <div class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+            <p class="text-sm text-amber-800">
+              <span class="font-bold">✂️ Corte a medida disponible.</span> 
+              {!product.customCutReturnable && ' Los cortes personalizados no admiten devolución.'}
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Descripción completa -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-slate-900 mb-4">Descripción</h2>
+      <div class="prose prose-slate max-w-none">
+        <p class="text-lg text-slate-600 leading-relaxed">
+          {product.description}
+        </p>
+      </div>
+    </section>
+
+    <!-- Características y aplicaciones -->
+    <section class="grid md:grid-cols-2 gap-8 mb-16">
+      <div>
+        <h2 class="text-2xl font-bold text-slate-900 mb-4">Características</h2>
+        <ul class="space-y-3">
+          {product.features.map((feature) => (
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+              </svg>
+              <span class="text-slate-700">{feature}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-bold text-slate-900 mb-4">Aplicaciones</h2>
+        <ul class="space-y-3">
+          {product.applications.map((application) => (
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-blue-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+              </svg>
+              <span class="text-slate-700">{application}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- Especificaciones técnicas -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-slate-900 mb-6">Especificaciones técnicas</h2>
+      <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200">
+          {product.specs.map((spec) => (
+            <div class="p-5">
+              <span class="text-sm text-slate-500 block mb-1">{spec.label}</span>
+              <span class="text-lg font-bold text-slate-900">{spec.value}</span>
+            </div>
+          ))}
+          <div class="p-5">
+            <span class="text-sm text-slate-500 block mb-1">Material fibra</span>
+            <span class="text-lg font-bold text-slate-900">{product.material}</span>
+          </div>
+          <div class="p-5">
+            <span class="text-sm text-slate-500 block mb-1">Base / Backing</span>
+            <span class="text-lg font-bold text-slate-900">{product.backing}</span>
+          </div>
+          <div class="p-5">
+            <span class="text-sm text-slate-500 block mb-1">Garantía</span>
+            <span class="text-lg font-bold text-slate-900">{product.warranty} años</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tags / Palabras clave -->
+    <section class="mb-16">
+      <h2 class="text-xl font-bold text-slate-900 mb-4">Ideal para</h2>
+      <div class="flex flex-wrap gap-2">
+        {product.tags.map((tag) => (
+          <span class="bg-gray-100 text-slate-700 px-4 py-2 rounded-full text-sm font-medium">
+            {tag}
+          </span>
+        ))}
+      </div>
+    </section>
+
+    <!-- Productos relacionados -->
+    {allRelated.length > 0 && (
+      <section class="mb-16">
+        <h2 class="text-2xl font-bold text-slate-900 mb-6">También te puede interesar</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+          {allRelated.map((related) => (
+            <a 
+              href={`/productos/${related.slug}`}
+              class="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-green-200 transition-all group"
+            >
+              <div class="h-32 bg-gradient-to-br from-green-100 to-green-50 flex items-center justify-center">
+                <span class="text-5xl font-black text-green-200">{related.height}mm</span>
+              </div>
+              <div class="p-4">
+                <h3 class="font-bold text-slate-900 group-hover:text-green-600 transition mb-1">
+                  {related.shortName}
+                </h3>
+                <p class="text-sm text-slate-500 mb-2">{related.category}</p>
+                <p class="text-green-600 font-bold">
+                  Desde {related.priceMin}€/m²
+                </p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- CTA Final -->
+    <section class="bg-slate-900 rounded-2xl p-8 md:p-12 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+        ¿Interesado en {product.shortName}?
+      </h2>
+      <p class="text-slate-300 mb-8 max-w-xl mx-auto">
+        Solicita presupuesto sin compromiso. Te asesoramos sobre medidas, instalación y el mejor formato para tu proyecto.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="tel:934850085" class="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-500 transition">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+          </svg>
+          Llamar ahora
+        </a>
+        <a href="mailto:ventas@disstands.com?subject=Presupuesto%20{product.shortName}" class="inline-flex items-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition">
+          Enviar email
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Schema markup -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.name,
+    "description": product.description,
+    "image": `https://cespedbcn.com${product.mainImage}`,
+    "brand": {
+      "@type": "Brand",
+      "name": "CespedBCN"
+    },
+    "offers": {
+      "@type": "AggregateOffer",
+      "lowPrice": product.priceMin,
+      "highPrice": product.priceMax,
+      "priceCurrency": "EUR",
+      "unitText": "m²",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "CespedBCN",
+        "telephone": "+34934850085"
+      }
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "47"
+    },
+    "additionalProperty": [
+      {
+        "@type": "PropertyValue",
+        "name": "Altura de fibra",
+        "value": `${product.height}mm`
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "Garantía",
+        "value": `${product.warranty} años`
+      }
+    ]
+  })} />
+
+</Layout>

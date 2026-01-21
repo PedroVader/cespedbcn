@@ -1,16 +1,656 @@
 ---
-
+// src/pages/index.astro
+import Layout from '../layouts/Layout.astro';
+import { barcelonaLocations } from '../data/locations';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="CespedBCN | Venta de Césped Artificial y Servicio a Profesionales">
+  <header class="relative overflow-hidden min-h-[700px] flex items-center">
+    
+    <div class="absolute inset-0 z-0">
+      <img 
+        src="/contrasting-outdoor-texture-design.jpg" 
+        alt="Césped Artificial Barcelona" 
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-black/80"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-20 relative z-10 w-full">
+        
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            
+            <div class="text-center lg:text-left">
+                <span class="inline-flex items-center gap-2 py-1 px-4 rounded-full bg-yellow-500/20 text-yellow-300 text-sm font-bold mb-6 uppercase tracking-widest border border-yellow-500/30 backdrop-blur-sm animate-pulse">
+                 Asesoramiento Gratuito
+                </span>
+
+                <h1 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
+                  Venta Premium de<br>
+                  <span class="text-green-400">Césped Artificial.</span>
+                </h1>
+                
+                <p class="text-lg md:text-xl text-slate-300 mb-6 font-light leading-relaxed max-w-lg mx-auto lg:mx-0">
+                  Suministro directo a particulares y empresas. <br>
+                  <strong class="text-white font-bold">Servicio de instalación exclusivo para profesionales.</strong>
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10">
+                  <a href="tel:934850085" class="bg-green-600 text-white font-bold py-4 px-8 rounded-xl hover:bg-green-500 transition shadow-lg shadow-green-600/30 hover:scale-105 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
+                    Llamar Ahora
+                  </a>
+                  <a href="#barrios" class="bg-white/10 text-white border border-white/30 backdrop-blur-md font-bold py-4 px-8 rounded-xl hover:bg-white/20 transition flex items-center justify-center">
+                    Ver Zonas
+                  </a>
+                </div>
+            </div>
+
+            <div class="relative w-full max-w-md mx-auto">
+                <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 md:p-8 rounded-3xl shadow-2xl">
+                    <h3 class="text-2xl font-bold text-white mb-2">Presupuesto Rápido</h3>
+                    <p class="text-slate-300 text-sm mb-6">Déjanos tus datos y te asesoramos sobre el mejor modelo.</p>
+                    
+                    <form 
+                        class="space-y-4" 
+                        name="presupuesto-home" 
+                        method="POST" 
+                        data-netlify="true"
+                    >
+                        <input type="hidden" name="form-name" value="presupuesto-home" />
+
+                        <div>
+                            <input 
+                                type="text" 
+                                name="nombre" 
+                                placeholder="Nombre completo" 
+                                required
+                                class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-black/40 transition" 
+                            />
+                        </div>
+                        <div>
+                            <input 
+                                type="tel" 
+                                name="telefono" 
+                                placeholder="Teléfono de contacto" 
+                                required
+                                class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-black/40 transition" 
+                            />
+                        </div>
+                        <div>
+                            <select 
+                                name="tipo_cliente" 
+                                class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-black/40 transition appearance-none"
+                            >
+                                <option class="text-black" value="particular">Soy Particular (Quiero comprar)</option>
+                                <option class="text-black" value="profesional">Soy Profesional (Quiero instalar)</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 font-bold py-4 rounded-xl transition shadow-lg shadow-green-500/20 transform hover:-translate-y-1">
+                            Solicitar Información ➔
+                        </button>
+
+                        <p class="text-[10px] text-center text-gray-400 mt-4">
+                            Tus datos son 100% confidenciales.
+                        </p>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+  </header>
+
+  <section class="py-24 bg-white relative border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4">
+        
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+            
+            <div>
+                <span class="text-slate-500 font-bold uppercase tracking-widest text-xs">Líderes en Distribución</span>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-900 mt-2 mb-6 leading-tight">
+                    Tu especialista en <span class="text-green-700">Césped Artificial</span> en Barcelona.
+                </h2>
+                
+                <div class="space-y-6 text-slate-600 text-lg leading-relaxed font-light">
+                    <p>
+                        En <strong>CespedBCN</strong> (marca de Disstands Moquetas S.L.U.) hemos revolucionado la venta de césped sintético en el área metropolitana. Eliminamos intermediarios para ofrecerte la <strong>mejor relación calidad-precio</strong> del mercado.
+                    </p>
+                    <p>
+                        Disponemos de un stock permanente de bobinas de <strong>20mm a 50mm</strong>. Modelos de alta densidad, tecnología de recuperación de pisada y suavidad extrema, ideales tanto para terrazas en el Eixample como para jardines en Sant Cugat.
+                    </p>
+                </div>
+
+                <div class="mt-8 pt-8 border-t border-gray-100 flex gap-12">
+                    <div>
+                        <p class="text-4xl font-black text-slate-900">100k+</p>
+                        <p class="text-sm text-gray-500 mt-1">m² Vendidos</p>
+                    </div>
+                    <div>
+                        <p class="text-4xl font-black text-slate-900">24h</p>
+                        <p class="text-sm text-gray-500 mt-1">Entrega Rápida</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100">
+                <h3 class="text-xl font-black text-slate-900 mb-8 border-b border-slate-200 pb-4">
+                    Especificaciones Técnicas
+                </h3>
+
+                <ul class="grid sm:grid-cols-2 gap-y-6 gap-x-4">
+                    
+                    <li class="flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-slate-700 shrink-0">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
+                        </svg>
+                        <div class="text-sm">
+                            <strong class="block text-slate-900">Backing 100% ECO</strong>
+                            <span class="text-slate-500">Base de látex resistente</span>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-slate-700 shrink-0">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                        </svg>
+                        <div class="text-sm">
+                            <strong class="block text-slate-900">Protección UV</strong>
+                            <span class="text-slate-500">No decolora con el sol</span>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-slate-700 shrink-0">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                        </svg>
+                        <div class="text-sm">
+                            <strong class="block text-slate-900">Seguro 100%</strong>
+                            <span class="text-slate-500">Libre de plomo/metales</span>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-slate-700 shrink-0">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z" />
+                        </svg>
+                        <div class="text-sm">
+                            <strong class="block text-slate-900">Ideal para Niños</strong>
+                            <span class="text-slate-500">Suave y antibacteriano</span>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-slate-700 shrink-0">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                        </svg>
+                        <div class="text-sm">
+                            <strong class="block text-slate-900">Pet Friendly</strong>
+                            <span class="text-slate-500">Apto para mascotas</span>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-slate-700 shrink-0">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z" />
+                        </svg>
+                        <div class="text-sm">
+                            <strong class="block text-slate-900">Resistente</strong>
+                            <span class="text-slate-500">Intemperie y humedad</span>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-slate-700 shrink-0">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
+                        </svg>
+                        <div class="text-sm">
+                            <strong class="block text-slate-900">Ignífugo</strong>
+                            <span class="text-slate-500">Certificado anti-fuego</span>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-slate-700 shrink-0">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                        <div class="text-sm">
+                            <strong class="block text-slate-900">Efecto Memoria</strong>
+                            <span class="text-slate-500">Recuperación rápida</span>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+
+        </div>
+    </div>
+  </section>
+
+  <main id="barrios" class="max-w-7xl mx-auto px-4 py-24 bg-gray-50">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-4">Zonas de Distribución</h2>
+      <p class="text-gray-500 text-lg max-w-2xl mx-auto">
+        Realizamos envíos de material a todos los distritos. Si eres instalador profesional, contáctanos para colaborar.
+      </p>
+    </div>
+    
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {barcelonaLocations.map((distrito) => (
+        <article class="bg-white rounded-3xl shadow-sm hover:shadow-2xl transition duration-300 border border-gray-100 overflow-hidden group flex flex-col h-full">
+          
+          <div class="h-48 overflow-hidden relative">
+            <div class="absolute inset-0 bg-slate-900/20 group-hover:bg-transparent transition z-10"></div>
+            <img 
+              src={distrito.image} 
+              alt={`Venta de césped artificial en ${distrito.name}`} 
+              class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+            />
+            <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-slate-900/90 to-transparent p-4 z-20">
+               <h3 class="text-2xl font-black text-white shadow-sm">
+                {distrito.name}
+              </h3>
+            </div>
+          </div>
+          
+          <div class="flex-1 bg-white">
+            <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+               <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Puntos de entrega</span>
+               <span class="bg-white border border-gray-200 text-slate-600 text-xs font-bold px-2 py-1 rounded-md shadow-sm">
+                 {distrito.barrios.length} zonas
+               </span>
+            </div>
+
+            <ul class="flex flex-col">
+              {distrito.barrios.map((barrio) => (
+                <li class="border-b border-gray-100 last:border-0">
+                  <a 
+                    href={`/${distrito.slug}/${barrio.slug}`} 
+                    class="flex items-center justify-between p-4 text-slate-600 hover:text-green-700 hover:bg-green-50/30 transition-colors group/link"
+                  >
+                    <span class="font-medium">{barrio.name}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-green-300 group-hover/link:text-green-600 group-hover/link:translate-x-1 transition-all duration-300">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="p-3 bg-gray-50 text-center border-t border-gray-100">
+             <span class="text-[10px] font-bold text-green-700 uppercase tracking-widest">
+                Distribución Garantizada
+             </span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </main>
+
+  <section class="py-24 bg-white border-t border-gray-100 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4">
+        
+        <div class="text-center mb-12 max-w-3xl mx-auto">
+            <span class="text-slate-500 font-bold uppercase tracking-widest text-xs">Ingeniería del Producto</span>
+            <h2 class="text-3xl md:text-4xl font-black text-slate-900 mt-2 mb-6">
+                Variedad de hilos técnicos
+            </h2>
+            <p class="text-slate-600 text-lg leading-relaxed font-light">
+                El rendimiento, la estética y la durabilidad del <strong>césped artificial profesional</strong> dependen en gran medida del tipo de hilo. Contamos con una variedad avanzada de fibras sintéticas.
+            </p>
+        </div>
+
+        <div class="relative group">
+            
+            <button id="slideLeft" class="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 z-10 bg-white text-slate-800 p-3 rounded-full shadow-lg border border-gray-100 hover:scale-110 hover:bg-green-600 hover:text-white transition duration-300 hidden md:flex items-center justify-center cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                </svg>
+            </button>
+
+            <div id="sliderContainer" class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 px-4 scroll-smooth" style="scrollbar-width: none; -ms-overflow-style: none;">
+                
+                <div class="snap-center shrink-0 w-80 bg-gray-50 border border-gray-100 rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                    <div class="h-40 flex items-center justify-center mb-4 bg-white rounded-xl overflow-hidden p-4">
+                        <img src="https://visa-garden.com/wp-content/uploads/2025/09/2-300x300.png" alt="Hilo Forma S" class="h-full object-contain mix-blend-multiply" />
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-xl mb-3">Forma S</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        Hilo monofilamento con forma en S que ofrece gran durabilidad y un tacto suave y natural.
+                    </p>
+                </div>
+
+                <div class="snap-center shrink-0 w-80 bg-gray-50 border border-gray-100 rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                    <div class="h-40 flex items-center justify-center mb-4 bg-white rounded-xl overflow-hidden p-4">
+                        <img src="https://visa-garden.com/wp-content/uploads/2025/09/Ellipse-11.png" alt="Hilo Forma C" class="h-full object-contain mix-blend-multiply" />
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-xl mb-3">Forma C</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        Diseñado con memoria vertical que facilita la recuperación rápida tras el pisado.
+                    </p>
+                </div>
+
+                <div class="snap-center shrink-0 w-80 bg-gray-50 border border-gray-100 rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                    <div class="h-40 flex items-center justify-center mb-4 bg-white rounded-xl overflow-hidden p-4">
+                        <img src="https://visa-garden.com/wp-content/uploads/2025/09/7-300x300.png" alt="Nervio Central" class="h-full object-contain mix-blend-multiply" />
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-xl mb-3">Nervio Central</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        Mayor resistencia a la abrasión y acabado extra realista. Perfecto para paisajismo.
+                    </p>
+                </div>
+
+                <div class="snap-center shrink-0 w-80 bg-gray-50 border border-gray-100 rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                    <div class="h-40 flex items-center justify-center mb-4 bg-white rounded-xl overflow-hidden p-4">
+                        <img src="https://visa-garden.com/wp-content/uploads/2025/09/4-300x300.png" alt="Forma D" class="h-full object-contain mix-blend-multiply" />
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-xl mb-3">Forma D</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        Suavidad extrema y tacto agradable. Recomendado para uso familiar o infantil.
+                    </p>
+                </div>
+
+                <div class="snap-center shrink-0 w-80 bg-gray-50 border border-gray-100 rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                    <div class="h-40 flex items-center justify-center mb-4 bg-white rounded-xl overflow-hidden p-4">
+                        <img src="https://visa-garden.com/wp-content/uploads/2025/09/6-300x300.png" alt="Forma Plana" class="h-full object-contain mix-blend-multiply" />
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-xl mb-3">Forma Plana</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        Estructura en W que garantiza excelente memoria de recuperación ante uso intensivo.
+                    </p>
+                </div>
+
+                <div class="snap-center shrink-0 w-80 bg-gray-50 border border-gray-100 rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                    <div class="h-40 flex items-center justify-center mb-4 bg-white rounded-xl overflow-hidden p-4">
+                        <img src="https://visa-garden.com/wp-content/uploads/2025/09/8-300x300.png" alt="Nervio W" class="h-full object-contain mix-blend-multiply" />
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-xl mb-3">Nervio W</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        Look muy natural y alta recuperación vertical en cualquier estación.
+                    </p>
+                </div>
+
+                <div class="snap-center shrink-0 w-80 bg-gray-50 border border-gray-100 rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                    <div class="h-40 flex items-center justify-center mb-4 bg-white rounded-xl overflow-hidden p-4">
+                        <img src="https://visa-garden.com/wp-content/uploads/2025/09/4-300x300.png" alt="Nervio Ribbed" class="h-full object-contain mix-blend-multiply" />
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-xl mb-3">Nervio Ribbed</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        Textura acanalada que mejora la recuperación. Para alto tránsito y áreas comunes.
+                    </p>
+                </div>
+
+            </div>
+
+            <button id="slideRight" class="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 z-10 bg-white text-slate-800 p-3 rounded-full shadow-lg border border-gray-100 hover:scale-110 hover:bg-green-600 hover:text-white transition duration-300 hidden md:flex items-center justify-center cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                </svg>
+            </button>
+
+        </div>
+    </div>
+  </section>
+
+  <script>
+    const slider = document.getElementById('sliderContainer');
+    const leftBtn = document.getElementById('slideLeft');
+    const rightBtn = document.getElementById('slideRight');
+
+    if (slider && leftBtn && rightBtn) {
+        rightBtn.addEventListener('click', () => {
+            slider.scrollBy({ left: 350, behavior: 'smooth' });
+        });
+
+        leftBtn.addEventListener('click', () => {
+            slider.scrollBy({ left: -350, behavior: 'smooth' });
+        });
+    }
+  </script>
+
+  <section id="servicios" class="py-24 bg-gray-50 border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-4">
+        
+        <div class="text-center mb-16 max-w-2xl mx-auto">
+            <span class="text-green-600 font-bold uppercase tracking-widest text-xs">Soluciones Integrales</span>
+            <h2 class="text-3xl md:text-4xl font-black text-slate-900 mt-2 mb-4">
+                Servicios para cada necesidad
+            </h2>
+            <p class="text-slate-600 text-lg font-light">
+                Adaptamos nuestra operativa tanto al particular que busca renovar su terraza como a la gran constructora que necesita miles de metros cuadrados.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            
+            <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition duration-300 group">
+                <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center text-green-600 mb-6 group-hover:bg-green-600 group-hover:text-white transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-3">Venta y Corte a Medida</h3>
+                <p class="text-slate-500 leading-relaxed text-sm mb-6">
+                    Suministramos desde bobinas completas para grandes superficies hasta pequeños cortes a medida para terrazas particulares. Stock permanente de todos los modelos.
+                </p>
+                <ul class="text-sm text-slate-600 space-y-2 border-t border-gray-50 pt-4">
+                    <li class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                        Para Particulares y Empresas
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                        Sin pedido mínimo
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-slate-900 rounded-2xl p-8 shadow-xl border border-slate-800 hover:shadow-2xl hover:-translate-y-1 transition duration-300 group relative overflow-hidden">
+                <div class="absolute top-4 right-4 bg-white/10 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider border border-white/20">
+                    Solo Profesionales
+                </div>
+
+                <div class="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center text-green-400 mb-6 group-hover:bg-green-600 group-hover:text-white transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Instalación Técnica</h3>
+                <p class="text-slate-400 leading-relaxed text-sm mb-6">
+                    Servicio exclusivo B2B. Instalamos pistas de pádel, campos de fútbol, eventos corporativos y obra pública. Equipos propios con maquinaria especializada.
+                </p>
+                <ul class="text-sm text-slate-400 space-y-2 border-t border-white/10 pt-4">
+                    <li class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                        Obras y Eventos
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                        Instalaciones Deportivas
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition duration-300 group">
+                <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 mb-6 group-hover:bg-blue-600 group-hover:text-white transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-3">Logística Exprés</h3>
+                <p class="text-slate-500 leading-relaxed text-sm mb-6">
+                    Gestionamos el transporte integral. Entregas en 24/48h dentro del Área Metropolitana. Servicio de grúa para descargar material pesado en obra.
+                </p>
+                <ul class="text-sm text-slate-600 space-y-2 border-t border-gray-50 pt-4">
+                    <li class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                        Entrega en 24/48h
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                        Servicio de Grúa
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-6">
+            
+          <button class="open-modal-btn bg-green-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-green-500 transition shadow-lg shadow-green-600/30 hover:-translate-y-1 flex items-center gap-2 cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+              Solicitar Presupuesto
+          </button>
+
+          <a href="tel:934850085" class="bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-800 transition shadow-lg shadow-slate-900/20 hover:-translate-y-1 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+              </svg>
+              Llamar Ahora
+          </a>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 bg-gray-50 border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-4">
+        
+        <div class="text-center mb-16">
+            <span class="text-slate-500 font-bold uppercase tracking-widest text-xs">Dudas Frecuentes</span>
+            <h2 class="text-3xl md:text-4xl font-black text-slate-900 mt-2">Resolvemos tus dudas</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-x-12 gap-y-12">
+            
+            <div class="flex gap-4 items-start">
+                <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 shrink-0 text-green-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" /></svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-lg mb-2">¿Se puede instalar sobre tierra y baldosa?</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        Sí. Sobre <strong>baldosa</strong> la instalación es sencilla y limpia (puedes hacerlo tú mismo con cinta de doble cara). Sobre <strong>tierra</strong> requiere una preparación previa del terreno (malla antihierbas y grava) para garantizar el drenaje.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex gap-4 items-start">
+                <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 shrink-0 text-green-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-lg mb-2">¿Es apto para perros y gatos?</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        Totalmente. Nuestros modelos tienen una resistencia a la arrancada superior a 30 Newtons. Además, es muy fácil de limpiar: si hacen sus necesidades, basta con retirar lo sólido y aclarar con agua y jabón neutro para desinfectar.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex gap-4 items-start">
+                <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 shrink-0 text-green-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" /></svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-lg mb-2">¿Qué mantenimiento necesita?</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        Mínimo. Solo necesitas cepillarlo de vez en cuando a contrapelo (para levantar las fibras) y darle un manguerazo de agua para quitar el polvo. Olvídate de abonos, cortes y facturas altas de agua.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex gap-4 items-start">
+                <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 shrink-0 text-green-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z" /></svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-lg mb-2">¿Se encharca cuando llueve?</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        No. Todos nuestros modelos cuentan con drenaje MaxFlow cada 10 cm. Evacúan más de <strong>60 litros por minuto y m²</strong>, superior a la intensidad de cualquier tormenta habitual en Barcelona.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex gap-4 items-start">
+                <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 shrink-0 text-green-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-lg mb-2">¿Cuánto dura la garantía?</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        La vida útil media oscila entre 15 y 20 años. Ofrecemos una <strong>garantía de 8 años</strong> contra la decoloración por rayos UV y la caída prematura de fibra, certificada por laboratorio europeo.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex gap-4 items-start">
+                <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 shrink-0 text-green-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-lg mb-2">¿Hacéis la instalación?</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        La <strong>venta es para todos</strong> (particulares y empresas), pero el servicio de <strong>instalación es exclusivo para profesionales</strong> (B2B): Pistas de pádel, campos de fútbol, eventos y obra pública. Si eres particular, te suministramos el material para que lo instales tú mismo.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+  </section>
+  <section class="py-20 bg-gray-50 px-4">
+    <div class="max-w-6xl mx-auto">
+        
+        <div class="bg-slate-900 rounded-3xl p-8 md:p-16 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12 text-center md:text-left shadow-2xl shadow-slate-900/20">
+            
+            <div class="absolute inset-0 opacity-10 pointer-events-none">
+                <svg class="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path d="M0 100 C 20 0 50 0 100 100 Z" fill="white" />
+                </svg>
+            </div>
+
+            <div class="relative z-10 max-w-2xl">
+                <span class="text-green-400 font-bold tracking-widest uppercase text-xs mb-2 block">
+                    Stock Permanente en Barcelona
+                </span>
+                <h2 class="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">
+                    ¿Listo para transformar tu espacio?
+                </h2>
+                <p class="text-slate-300 text-lg mb-0">
+                    Tanto si eres particular y buscas material de calidad, como si eres un profesional que necesita instalación técnica. Tenemos la solución lista para ti en nuestro almacén.
+                </p>
+            </div>
+
+            <div class="relative z-10 flex flex-col gap-4 w-full md:w-auto shrink-0">
+                
+                <button class="open-modal-btn bg-green-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-green-500 transition shadow-lg shadow-green-900/50 flex items-center justify-center gap-3 transform hover:scale-105 duration-200 cursor-pointer w-full md:w-auto">
+                    <span>Pedir Presupuesto</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                    </svg>
+                </button>
+
+                <a href="tel:934850085" class="bg-white/10 text-white border border-white/20 px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition flex items-center justify-center gap-3 backdrop-blur-sm w-full md:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+                    </svg>
+                    <span>934 850 085</span>
+                </a>
+                
+                <p class="text-xs text-gray-500 text-center mt-2">
+                    Lunes a Viernes de 9:00 a 18:00
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+  </section>
+</Layout>
