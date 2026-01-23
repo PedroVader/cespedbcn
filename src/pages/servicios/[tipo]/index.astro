@@ -3,6 +3,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import { productData, type ProductCategory } from '../../../data/products';
 import { barcelonaLocations } from '../../../data/locations';
+
 export async function getStaticPaths() {
   const tipos: ProductCategory[] = [
     'deportivo',
@@ -28,7 +29,6 @@ export async function getStaticPaths() {
 
 const { tipo, product } = Astro.props;
 
-// Obtener barrios que usan este tipo de servicio
 const barriosConEsteTipo = barcelonaLocations.flatMap(distrito => 
   distrito.barrios
     .filter(barrio => barrio.type === tipo)
@@ -39,7 +39,6 @@ const barriosConEsteTipo = barcelonaLocations.flatMap(distrito =>
     }))
 );
 
-// Agrupar por distrito para mostrar
 const barriosPorDistrito = barcelonaLocations
   .map(distrito => ({
     ...distrito,
@@ -50,371 +49,596 @@ const barriosPorDistrito = barcelonaLocations
 const pageTitle = `${product.title} en Barcelona | CespedBCN`;
 const pageDescription = `${product.description.slice(0, 150)}... Presupuesto gratis. Garantía ${product.technicalSpecs.garantiaFabrica}.`;
 
-// Formatear precio
 const formatPrice = (price: number) => `${price}€/m²`;
 ---
 
 <Layout title={pageTitle}>
 
   <!-- Breadcrumbs -->
-  <nav class="bg-gray-50 border-b border-gray-200">
-    <div class="max-w-6xl mx-auto px-4 py-3">
-      <ol class="flex items-center gap-2 text-sm text-gray-600">
+  <nav class="bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+      <ol class="flex items-center gap-2 text-sm text-gray-500">
         <li><a href="/" class="hover:text-green-600 transition">Inicio</a></li>
-        <li><span class="text-gray-400">/</span></li>
+        <li><span class="text-gray-300">/</span></li>
         <li><a href="/servicios" class="hover:text-green-600 transition">Servicios</a></li>
-        <li><span class="text-gray-400">/</span></li>
-        <li class="text-gray-900 font-medium">{product.title}</li>
+        <li><span class="text-gray-300">/</span></li>
+        <li class="text-slate-900 font-medium">{product.title}</li>
       </ol>
     </div>
   </nav>
 
-  <!-- Hero -->
-  <header class="bg-slate-900 text-white py-16 md:py-24">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="max-w-3xl">
-        <span class="inline-block bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">
-          Servicio Especializado
-        </span>
-        <h1 class="text-4xl md:text-5xl font-black mb-4">
-          {product.title}
-        </h1>
-        <p class="text-xl text-slate-300 mb-8">
-          {product.subtitle}
-        </p>
+  <!-- Hero con imagen de fondo (mismo estilo que homepage) -->
+  <header class="relative overflow-hidden min-h-[600px] flex items-center">
+    
+    <div class="absolute inset-0 z-0">
+      <img 
+        src="/contrasting-outdoor-texture-design.jpg" 
+        alt={product.title}
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-black/80"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-20 relative z-10 w-full">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
         
-        <div class="flex flex-wrap gap-4 mb-8">
-          <div class="bg-white/10 backdrop-blur rounded-xl px-4 py-3 border border-white/20">
-            <span class="block text-2xl font-bold text-green-400">
-              {formatPrice(product.pricing.basePrice)} - {formatPrice(product.pricing.premiumPrice)}
-            </span>
-            <span class="text-sm text-slate-400">Precio material</span>
-          </div>
-          <div class="bg-white/10 backdrop-blur rounded-xl px-4 py-3 border border-white/20">
-            <span class="block text-2xl font-bold text-white">
-              {product.technicalSpecs.garantiaFabrica}
-            </span>
-            <span class="text-sm text-slate-400">Garantía fábrica</span>
-          </div>
-          <div class="bg-white/10 backdrop-blur rounded-xl px-4 py-3 border border-white/20">
-            <span class="block text-2xl font-bold text-white">
-              {product.installationTime}
-            </span>
-            <span class="text-sm text-slate-400">Instalación</span>
+        <!-- Contenido principal -->
+        <div class="text-center lg:text-left">
+          <span class="inline-flex items-center gap-2 py-1 px-4 rounded-full bg-green-500/20 text-green-300 text-xs font-bold uppercase tracking-widest border border-green-500/30 backdrop-blur-sm mb-6">
+            Servicio Especializado
+          </span>
+
+          <h1 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
+            {product.title.split(' ')[0]}<br>
+            <span class="text-green-400">{product.title.split(' ').slice(1).join(' ') || 'Profesional'}</span>
+          </h1>
+          
+          <p class="text-lg md:text-xl text-slate-300 mb-8 font-light leading-relaxed max-w-lg mx-auto lg:mx-0">
+            {product.subtitle}
+          </p>
+          
+          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <a href="tel:934850085" class="bg-green-600 text-white font-bold py-4 px-8 rounded-xl hover:bg-green-500 transition shadow-lg shadow-green-600/30 hover:scale-105 flex items-center justify-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+              </svg>
+              934 850 085
+            </a>
+            <a href="mailto:ventas@disstands.com" class="bg-white/10 text-white border border-white/30 backdrop-blur-md font-bold py-4 px-8 rounded-xl hover:bg-white/20 transition flex items-center justify-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+              </svg>
+              Pedir Presupuesto
+            </a>
           </div>
         </div>
 
-        <div class="flex flex-wrap gap-4">
-          <a href="tel:934850085" class="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-500 transition">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
-            </svg>
-            934 850 085
-          </a>
-          <a href="mailto:ventas@disstands.com" class="inline-flex items-center gap-2 bg-white/10 text-white px-6 py-3 rounded-xl font-bold hover:bg-white/20 transition border border-white/20">
-            Pedir presupuesto
-          </a>
+        <!-- Tarjeta de métricas (glassmorphism como el form de homepage) -->
+        <div class="relative w-full max-w-md mx-auto">
+          <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 md:p-8 rounded-3xl shadow-2xl">
+            <h3 class="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Datos Técnicos</h3>
+            
+            <div class="space-y-4">
+              <div class="flex justify-between items-center py-3 border-b border-white/10">
+                <span class="text-slate-400 text-sm">Precio material</span>
+                <span class="text-2xl font-black text-green-400">{formatPrice(product.pricing.basePrice)} - {formatPrice(product.pricing.premiumPrice)}</span>
+              </div>
+              <div class="flex justify-between items-center py-3 border-b border-white/10">
+                <span class="text-slate-400 text-sm">Garantía fábrica</span>
+                <span class="text-xl font-bold text-white">{product.technicalSpecs.garantiaFabrica}</span>
+              </div>
+              <div class="flex justify-between items-center py-3 border-b border-white/10">
+                <span class="text-slate-400 text-sm">Instalación</span>
+                <span class="text-xl font-bold text-white">{product.installationTime}</span>
+              </div>
+              <div class="flex justify-between items-center py-3">
+                <span class="text-slate-400 text-sm">Ahorro anual</span>
+                <span class="text-xl font-bold text-yellow-400">{product.pricing.savingsVsNatural}€/año</span>
+              </div>
+            </div>
+
+            <p class="text-[10px] text-center text-gray-400 mt-6 pt-4 border-t border-white/10">
+              * Precios orientativos. Solicita presupuesto personalizado.
+            </p>
+          </div>
         </div>
+
       </div>
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-4 py-12">
-
-    <!-- Descripción + Casos de uso -->
-    <section class="grid lg:grid-cols-2 gap-12 mb-16">
-      <div>
-        <h2 class="text-2xl font-bold text-slate-900 mb-4">¿Qué es?</h2>
-        <p class="text-lg text-slate-600 leading-relaxed mb-6">
-          {product.description}
-        </p>
+  <!-- Sección: ¿Qué es? + Beneficios -->
+  <section class="py-24 bg-white relative border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid lg:grid-cols-2 gap-16 items-start">
         
-        <h3 class="text-xl font-bold text-slate-900 mb-4">Aplicaciones</h3>
-        <ul class="space-y-2">
-          {product.useCases.map((useCase) => (
-            <li class="flex items-start gap-3">
-              <svg class="w-5 h-5 text-green-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-              </svg>
-              <span class="text-slate-700">{useCase}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div>
-        <h3 class="text-xl font-bold text-slate-900 mb-4">Beneficios principales</h3>
-        <div class="space-y-4">
-          {product.benefits.map((benefit) => (
-            <div class="flex items-start gap-4 bg-green-50 border border-green-100 rounded-xl p-4">
-              <span class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center shrink-0">
-                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                </svg>
-              </span>
-              <span class="text-slate-700">{benefit}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- Especificaciones técnicas -->
-    <section class="mb-16">
-      <h2 class="text-2xl font-bold text-slate-900 mb-6">Especificaciones técnicas</h2>
-      <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden">
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-200">
-          <div class="p-6">
-            <span class="text-sm text-slate-500 block mb-1">Altura de fibra</span>
-            <span class="text-xl font-bold text-slate-900">{product.technicalSpecs.altura}</span>
-          </div>
-          <div class="p-6">
-            <span class="text-sm text-slate-500 block mb-1">Peso</span>
-            <span class="text-xl font-bold text-slate-900">{product.technicalSpecs.peso}</span>
-          </div>
-          <div class="p-6">
-            <span class="text-sm text-slate-500 block mb-1">Densidad</span>
-            <span class="text-xl font-bold text-slate-900">{product.technicalSpecs.densidad}</span>
-          </div>
-          <div class="p-6">
-            <span class="text-sm text-slate-500 block mb-1">Drenaje</span>
-            <span class="text-xl font-bold text-slate-900">{product.technicalSpecs.drenaje}</span>
-          </div>
-        </div>
-        <div class="border-t border-slate-200 grid sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-200">
-          <div class="p-6">
-            <span class="text-sm text-slate-500 block mb-1">Material</span>
-            <span class="text-lg font-semibold text-slate-900">{product.technicalSpecs.material}</span>
-          </div>
-          <div class="p-6">
-            <span class="text-sm text-slate-500 block mb-1">Resistencia UV</span>
-            <span class="text-lg font-semibold text-slate-900">{product.technicalSpecs.resistenciaUV}</span>
-          </div>
-          <div class="p-6">
-            <span class="text-sm text-slate-500 block mb-1">Garantía instalación</span>
-            <span class="text-lg font-semibold text-slate-900">{product.technicalSpecs.garantiaInstalacion}</span>
-          </div>
-          <div class="p-6 flex items-center gap-4">
-            {product.technicalSpecs.ignifugo && (
-              <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded">Ignífugo</span>
-            )}
-            {product.technicalSpecs.antiAlergeno && (
-              <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">Antialérgeno</span>
-            )}
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Ideal para / No recomendado -->
-    <section class="grid md:grid-cols-2 gap-8 mb-16">
-      <div class="bg-green-50 border border-green-200 rounded-2xl p-6">
-        <h3 class="text-xl font-bold text-green-900 mb-4 flex items-center gap-2">
-          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-          Ideal para
-        </h3>
-        <ul class="space-y-2">
-          {product.idealFor.map((item) => (
-            <li class="text-green-800 flex items-start gap-2">
-              <span class="text-green-600">→</span>
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-      
-      <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6">
-        <h3 class="text-xl font-bold text-amber-900 mb-4 flex items-center gap-2">
-          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-          </svg>
-          No recomendado para
-        </h3>
-        <ul class="space-y-2">
-          {product.notRecommendedFor.map((item) => (
-            <li class="text-amber-800 flex items-start gap-2">
-              <span class="text-amber-600">→</span>
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-
-    <!-- Proceso de instalación -->
-    <section class="mb-16">
-      <h2 class="text-2xl font-bold text-slate-900 mb-6">Proceso de instalación</h2>
-      <div class="bg-slate-900 rounded-2xl p-8 text-white">
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {product.installationSteps.map((step, index) => (
-            <div class="flex items-start gap-4">
-              <span class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-sm font-bold shrink-0">
-                {index + 1}
-              </span>
-              <span class="text-slate-300 text-sm">{step}</span>
-            </div>
-          ))}
-        </div>
-        <div class="mt-8 pt-6 border-t border-white/20 flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <span class="text-slate-400 text-sm">Tiempo estimado de instalación:</span>
-            <span class="text-white font-bold ml-2">{product.installationTime}</span>
-          </div>
-          <a href="tel:934850085" class="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-500 transition text-sm">
-            Solicitar instalación
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Mantenimiento -->
-    <section class="mb-16">
-      <h2 class="text-2xl font-bold text-slate-900 mb-6">Mantenimiento</h2>
-      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Descripción -->
         <div>
-          <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
-            <span class="text-blue-900 font-bold">Frecuencia recomendada:</span>
-            <span class="text-blue-700 ml-2">{product.maintenanceFrequency}</span>
+          <span class="text-slate-500 font-bold uppercase tracking-widest text-xs">Sobre este producto</span>
+          <h2 class="text-3xl md:text-5xl font-black text-slate-900 mt-2 mb-6 leading-tight">
+            ¿Qué es el <span class="text-green-700">{product.title.toLowerCase()}</span>?
+          </h2>
+          
+          <p class="text-slate-600 text-lg leading-relaxed font-light mb-8">
+            {product.description}
+          </p>
+
+          <h3 class="font-bold text-slate-900 text-xl mb-4">Aplicaciones principales</h3>
+          <ul class="space-y-3">
+            {product.useCases.map((useCase) => (
+              <li class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-green-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+                <span class="text-slate-600">{useCase}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Beneficios (tarjeta estilo specs de homepage) -->
+        <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100">
+          <h3 class="text-xl font-black text-slate-900 mb-8 border-b border-slate-200 pb-4">
+            Beneficios Principales
+          </h3>
+
+          <ul class="space-y-6">
+            {product.benefits.map((benefit, i) => (
+              <li class="flex items-start gap-4">
+                <div class="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center text-white font-bold shrink-0">
+                  {i + 1}
+                </div>
+                <div class="text-slate-600 pt-2">{benefit}</div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Especificaciones técnicas -->
+  <section class="py-24 bg-gray-50 border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4">
+      
+      <div class="text-center mb-16">
+        <span class="text-slate-500 font-bold uppercase tracking-widest text-xs">Ficha Técnica</span>
+        <h2 class="text-3xl md:text-4xl font-black text-slate-900 mt-2">Especificaciones del producto</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center hover:shadow-xl hover:-translate-y-1 transition duration-300">
+          <span class="text-slate-400 text-sm block mb-2">Altura de fibra</span>
+          <span class="text-3xl font-black text-slate-900">{product.technicalSpecs.altura}</span>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center hover:shadow-xl hover:-translate-y-1 transition duration-300">
+          <span class="text-slate-400 text-sm block mb-2">Peso</span>
+          <span class="text-3xl font-black text-slate-900">{product.technicalSpecs.peso}</span>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center hover:shadow-xl hover:-translate-y-1 transition duration-300">
+          <span class="text-slate-400 text-sm block mb-2">Densidad</span>
+          <span class="text-3xl font-black text-slate-900">{product.technicalSpecs.densidad}</span>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center hover:shadow-xl hover:-translate-y-1 transition duration-300">
+          <span class="text-slate-400 text-sm block mb-2">Drenaje</span>
+          <span class="text-3xl font-black text-slate-900">{product.technicalSpecs.drenaje}</span>
+        </div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+          <span class="text-slate-400 text-sm block mb-2">Material</span>
+          <span class="text-lg font-bold text-slate-900">{product.technicalSpecs.material}</span>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+          <span class="text-slate-400 text-sm block mb-2">Resistencia UV</span>
+          <span class="text-lg font-bold text-slate-900">{product.technicalSpecs.resistenciaUV}</span>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+          <span class="text-slate-400 text-sm block mb-2">Garantía instalación</span>
+          <span class="text-lg font-bold text-slate-900">{product.technicalSpecs.garantiaInstalacion}</span>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center justify-center gap-3">
+          {product.technicalSpecs.ignifugo && (
+            <span class="bg-red-50 text-red-600 text-xs font-bold px-3 py-1.5 rounded-full border border-red-100">🔥 Ignífugo</span>
+          )}
+          {product.technicalSpecs.antiAlergeno && (
+            <span class="bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1.5 rounded-full border border-blue-100">✨ Antialérgeno</span>
+          )}
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Ideal para / No recomendado -->
+  <section class="py-24 bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid md:grid-cols-2 gap-8">
+        
+        <!-- Ideal para -->
+        <div class="bg-green-50 rounded-3xl p-8 border border-green-100">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-black text-green-900">Ideal para</h3>
           </div>
           <ul class="space-y-3">
-            {product.maintenanceDetails.map((detail) => (
-              <li class="flex items-start gap-3 text-slate-600">
-                <svg class="w-5 h-5 text-blue-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
+            {product.idealFor.map((item) => (
+              <li class="flex items-start gap-3 bg-white/60 rounded-xl p-4">
+                <svg class="w-5 h-5 text-green-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                 </svg>
-                {detail}
+                <span class="text-green-800">{item}</span>
               </li>
             ))}
           </ul>
         </div>
         
-        <div class="bg-gradient-to-br from-green-600 to-green-700 rounded-2xl p-6 text-white">
-          <h3 class="text-xl font-bold mb-4">Ahorro vs césped natural</h3>
-          <dl class="space-y-4">
-            <div>
-              <dt class="text-green-200 text-sm">Ahorro de agua</dt>
-              <dd class="text-2xl font-bold">{product.vsNaturalGrass.waterSavings}</dd>
+        <!-- No recomendado -->
+        <div class="bg-amber-50 rounded-3xl p-8 border border-amber-100">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+              </svg>
             </div>
-            <div>
-              <dt class="text-green-200 text-sm">Ahorro de tiempo</dt>
-              <dd class="text-2xl font-bold">{product.vsNaturalGrass.timeSavings}</dd>
-            </div>
-            <div>
-              <dt class="text-green-200 text-sm">Ahorro económico</dt>
-              <dd class="text-2xl font-bold">{product.vsNaturalGrass.costSavings}</dd>
-            </div>
-            <div>
-              <dt class="text-green-200 text-sm">Durabilidad</dt>
-              <dd class="text-2xl font-bold">{product.vsNaturalGrass.durability}</dd>
-            </div>
-          </dl>
+            <h3 class="text-2xl font-black text-amber-900">No recomendado para</h3>
+          </div>
+          <ul class="space-y-3">
+            {product.notRecommendedFor.map((item) => (
+              <li class="flex items-start gap-3 bg-white/60 rounded-xl p-4">
+                <svg class="w-5 h-5 text-amber-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+                <span class="text-amber-800">{item}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-      </div>
-    </section>
 
-    <!-- Precios -->
-    <section class="mb-16">
-      <h2 class="text-2xl font-bold text-slate-900 mb-6">Precios orientativos</h2>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white border border-gray-200 rounded-xl p-5 text-center">
-          <span class="text-slate-500 text-sm block mb-2">Material (base)</span>
-          <span class="text-3xl font-black text-slate-900">{product.pricing.basePrice}€</span>
-          <span class="text-slate-500">/m²</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Proceso de instalación (estilo tarjeta oscura como servicios de homepage) -->
+  <section class="py-24 bg-gray-50 border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4">
+      
+      <div class="text-center mb-12">
+        <span class="text-green-600 font-bold uppercase tracking-widest text-xs">Paso a Paso</span>
+        <h2 class="text-3xl md:text-4xl font-black text-slate-900 mt-2">Proceso de instalación</h2>
+      </div>
+
+      <div class="bg-slate-900 rounded-3xl p-8 md:p-12 relative overflow-hidden">
+        
+        <!-- Patrón decorativo -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none">
+          <svg class="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M0 100 C 20 0 50 0 100 100 Z" fill="white" />
+          </svg>
         </div>
-        <div class="bg-white border border-gray-200 rounded-xl p-5 text-center">
-          <span class="text-slate-500 text-sm block mb-2">Material (premium)</span>
-          <span class="text-3xl font-black text-slate-900">{product.pricing.premiumPrice}€</span>
-          <span class="text-slate-500">/m²</span>
-        </div>
-        <div class="bg-white border border-gray-200 rounded-xl p-5 text-center">
-          <span class="text-slate-500 text-sm block mb-2">Instalación</span>
-          <span class="text-3xl font-black text-slate-900">{product.pricing.installationCost}€</span>
-          <span class="text-slate-500">/m²</span>
-        </div>
-        <div class="bg-green-50 border border-green-200 rounded-xl p-5 text-center">
-          <span class="text-green-700 text-sm block mb-2">Ahorro anual</span>
-          <span class="text-3xl font-black text-green-700">{product.pricing.savingsVsNatural}€</span>
-          <span class="text-green-600">/año</span>
+
+        <div class="relative z-10">
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+            {product.installationSteps.map((step, index) => (
+              <div class="flex items-start gap-4 bg-white/5 rounded-2xl p-5 border border-white/10 hover:bg-white/10 transition">
+                <span class="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center text-white font-bold shrink-0">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <p class="text-slate-300 text-sm leading-relaxed pt-2">{step}</p>
+              </div>
+            ))}
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t border-white/10">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center">
+                <svg class="w-7 h-7 text-green-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+              </div>
+              <div>
+                <span class="text-slate-400 text-sm block">Tiempo estimado</span>
+                <span class="text-white font-black text-xl">{product.installationTime}</span>
+              </div>
+            </div>
+            
+            <a href="tel:934850085" class="bg-green-600 text-white font-bold py-4 px-8 rounded-xl hover:bg-green-500 transition shadow-lg shadow-green-900/50 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+              </svg>
+              Solicitar Instalación
+            </a>
+          </div>
         </div>
       </div>
-      <p class="text-slate-500 text-sm mt-4 text-center">
+
+    </div>
+  </section>
+
+  <!-- Mantenimiento + Ahorro vs Natural -->
+  <section class="py-24 bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid lg:grid-cols-2 gap-16 items-start">
+        
+        <!-- Mantenimiento -->
+        <div>
+          <span class="text-slate-500 font-bold uppercase tracking-widest text-xs">Cuidado Mínimo</span>
+          <h2 class="text-3xl md:text-4xl font-black text-slate-900 mt-2 mb-8">Mantenimiento</h2>
+          
+          <div class="bg-blue-50 rounded-2xl p-5 border border-blue-100 mb-6 flex items-center gap-4">
+            <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+              </svg>
+            </div>
+            <div>
+              <span class="text-blue-600 text-sm">Frecuencia recomendada</span>
+              <span class="text-blue-900 font-black text-xl block">{product.maintenanceFrequency}</span>
+            </div>
+          </div>
+
+          <ul class="space-y-4">
+            {product.maintenanceDetails.map((detail) => (
+              <li class="flex items-start gap-4 bg-slate-50 rounded-xl p-4 border border-slate-100">
+                <svg class="w-5 h-5 text-slate-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
+                </svg>
+                <span class="text-slate-600">{detail}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Ahorro vs Natural (tarjeta verde destacada) -->
+        <div class="bg-green-600 rounded-3xl p-8 text-white relative overflow-hidden">
+          
+          <!-- Decoración -->
+          <div class="absolute -top-16 -right-16 w-48 h-48 bg-white/10 rounded-full"></div>
+          <div class="absolute -bottom-8 -left-8 w-32 h-32 bg-green-500/50 rounded-full"></div>
+
+          <div class="relative z-10">
+            <h3 class="text-2xl font-black mb-2">Ahorro vs Césped Natural</h3>
+            <p class="text-green-100 mb-8">Comparativa anual estimada</p>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-white/10 backdrop-blur rounded-2xl p-5">
+                <span class="text-green-200 text-sm block mb-1">💧 Agua</span>
+                <span class="text-2xl font-black">{product.vsNaturalGrass.waterSavings}</span>
+              </div>
+              <div class="bg-white/10 backdrop-blur rounded-2xl p-5">
+                <span class="text-green-200 text-sm block mb-1">⏱️ Tiempo</span>
+                <span class="text-2xl font-black">{product.vsNaturalGrass.timeSavings}</span>
+              </div>
+              <div class="bg-white/10 backdrop-blur rounded-2xl p-5">
+                <span class="text-green-200 text-sm block mb-1">💶 Económico</span>
+                <span class="text-2xl font-black">{product.vsNaturalGrass.costSavings}</span>
+              </div>
+              <div class="bg-white/10 backdrop-blur rounded-2xl p-5">
+                <span class="text-green-200 text-sm block mb-1">🛡️ Durabilidad</span>
+                <span class="text-2xl font-black">{product.vsNaturalGrass.durability}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Precios -->
+  <section class="py-24 bg-gray-50 border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4">
+      
+      <div class="text-center mb-16">
+        <span class="text-slate-500 font-bold uppercase tracking-widest text-xs">Transparencia Total</span>
+        <h2 class="text-3xl md:text-4xl font-black text-slate-900 mt-2">Precios orientativos</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center hover:shadow-xl hover:-translate-y-1 transition duration-300 group">
+          <div class="w-14 h-14 bg-slate-100 rounded-xl mx-auto mb-4 flex items-center justify-center group-hover:bg-green-50 transition">
+            <svg class="w-7 h-7 text-slate-400 group-hover:text-green-600 transition" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+            </svg>
+          </div>
+          <span class="text-slate-400 text-sm block mb-2">Material (base)</span>
+          <span class="text-4xl font-black text-slate-900">{product.pricing.basePrice}€</span>
+          <span class="text-slate-500">/m²</span>
+        </div>
+        
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center hover:shadow-xl hover:-translate-y-1 transition duration-300 group">
+          <div class="w-14 h-14 bg-slate-100 rounded-xl mx-auto mb-4 flex items-center justify-center group-hover:bg-green-50 transition">
+            <svg class="w-7 h-7 text-slate-400 group-hover:text-green-600 transition" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+            </svg>
+          </div>
+          <span class="text-slate-400 text-sm block mb-2">Material (premium)</span>
+          <span class="text-4xl font-black text-slate-900">{product.pricing.premiumPrice}€</span>
+          <span class="text-slate-500">/m²</span>
+        </div>
+        
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center hover:shadow-xl hover:-translate-y-1 transition duration-300 group">
+          <div class="w-14 h-14 bg-slate-100 rounded-xl mx-auto mb-4 flex items-center justify-center group-hover:bg-green-50 transition">
+            <svg class="w-7 h-7 text-slate-400 group-hover:text-green-600 transition" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
+            </svg>
+          </div>
+          <span class="text-slate-400 text-sm block mb-2">Instalación</span>
+          <span class="text-4xl font-black text-slate-900">{product.pricing.installationCost}€</span>
+          <span class="text-slate-500">/m²</span>
+        </div>
+        
+        <div class="bg-green-600 rounded-2xl p-6 shadow-xl text-center hover:-translate-y-1 transition duration-300 relative overflow-hidden">
+          <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full"></div>
+          <div class="w-14 h-14 bg-white/20 rounded-xl mx-auto mb-4 flex items-center justify-center relative z-10">
+            <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          </div>
+          <span class="text-green-100 text-sm block mb-2 relative z-10">Ahorro anual</span>
+          <span class="text-4xl font-black text-white relative z-10">{product.pricing.savingsVsNatural}€</span>
+          <span class="text-green-100 relative z-10">/año</span>
+        </div>
+      </div>
+
+      <p class="text-slate-400 text-sm mt-8 text-center">
         * Precios orientativos. Solicita presupuesto personalizado sin compromiso.
       </p>
-    </section>
 
-    <!-- FAQs -->
-    <section class="mb-16">
-      <h2 class="text-2xl font-bold text-slate-900 mb-6">Preguntas frecuentes</h2>
+    </div>
+  </section>
+
+  <!-- FAQs -->
+  <section class="py-24 bg-white border-b border-gray-100">
+    <div class="max-w-4xl mx-auto px-4">
+      
+      <div class="text-center mb-16">
+        <span class="text-slate-500 font-bold uppercase tracking-widest text-xs">Dudas Frecuentes</span>
+        <h2 class="text-3xl md:text-4xl font-black text-slate-900 mt-2">Preguntas sobre {product.title.toLowerCase()}</h2>
+      </div>
+
       <div class="space-y-4">
-        {product.specificFAQs.map((faq) => (
-          <details class="bg-white border border-gray-200 rounded-xl p-5 group">
-            <summary class="cursor-pointer list-none flex items-start justify-between gap-4">
-              <h3 class="font-bold text-slate-900">{faq.q}</h3>
-              <svg class="w-5 h-5 text-slate-400 shrink-0 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        {product.specificFAQs.map((faq, i) => (
+          <details class="bg-slate-50 rounded-2xl border border-slate-100 group" open={i === 0}>
+            <summary class="cursor-pointer list-none p-6 flex items-start justify-between gap-4">
+              <div class="flex items-start gap-4">
+                <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 shrink-0 text-green-700 group-open:bg-green-600 group-open:text-white transition">
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+                  </svg>
+                </div>
+                <h3 class="font-bold text-slate-900 text-lg pt-2">{faq.q}</h3>
+              </div>
+              <svg class="w-5 h-5 text-slate-400 shrink-0 mt-3 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
               </svg>
             </summary>
-            <p class="text-slate-600 mt-4 leading-relaxed">{faq.a}</p>
+            <div class="px-6 pb-6 pl-[72px]">
+              <p class="text-slate-600 leading-relaxed">{faq.a}</p>
+            </div>
           </details>
         ))}
       </div>
-    </section>
 
-    <!-- Zonas donde ofrecemos este servicio -->
-    {barriosPorDistrito.length > 0 && (
-      <section class="mb-16">
-        <h2 class="text-2xl font-bold text-slate-900 mb-6">
-          Zonas en Barcelona para {product.title.toLowerCase()}
-        </h2>
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    </div>
+  </section>
+
+  <!-- Zonas de distribución -->
+  {barriosPorDistrito.length > 0 && (
+    <section class="py-24 bg-gray-50 border-b border-gray-200">
+      <div class="max-w-7xl mx-auto px-4">
+        
+        <div class="text-center mb-16">
+          <span class="text-slate-500 font-bold uppercase tracking-widest text-xs">Cobertura Barcelona</span>
+          <h2 class="text-3xl md:text-4xl font-black text-slate-900 mt-2 mb-4">
+            Zonas para {product.title.toLowerCase()}
+          </h2>
+          <p class="text-gray-500 text-lg max-w-2xl mx-auto">
+            Realizamos envíos de material a todos los distritos. Si eres instalador profesional, contáctanos para colaborar.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {barriosPorDistrito.map((distrito) => (
-            <div class="bg-white border border-gray-200 rounded-xl p-5">
-              <h3 class="font-bold text-slate-900 mb-3">{distrito.name}</h3>
-              <ul class="space-y-2">
+            <article class="bg-white rounded-3xl shadow-sm hover:shadow-2xl transition duration-300 border border-gray-100 overflow-hidden group flex flex-col h-full">
+              
+              <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center group-hover:bg-green-600 transition">
+                    <svg class="w-5 h-5 text-green-600 group-hover:text-white transition" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-xl font-black text-slate-900">{distrito.name}</h3>
+                </div>
+                <span class="bg-white border border-gray-200 text-slate-600 text-xs font-bold px-2 py-1 rounded-md shadow-sm">
+                  {distrito.barriosFiltrados.length} zonas
+                </span>
+              </div>
+
+              <ul class="flex flex-col flex-1">
                 {distrito.barriosFiltrados.map((barrio) => (
-                  <li>
+                  <li class="border-b border-gray-100 last:border-0">
                     <a 
                       href={`/${distrito.slug}/${barrio.slug}`}
-                      class="text-slate-600 hover:text-green-600 transition flex items-center gap-2 text-sm"
+                      class="flex items-center justify-between p-4 text-slate-600 hover:text-green-700 hover:bg-green-50/30 transition-colors group/link"
                     >
-                      <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                      <span class="font-medium">{barrio.name}</span>
+                      <svg class="w-4 h-4 text-green-300 group-hover/link:text-green-600 group-hover/link:translate-x-1 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                       </svg>
-                      {barrio.name}
                     </a>
                   </li>
                 ))}
               </ul>
-            </div>
+
+              <div class="p-3 bg-gray-50 text-center border-t border-gray-100">
+                <span class="text-[10px] font-bold text-green-700 uppercase tracking-widest">
+                  Distribución Garantizada
+                </span>
+              </div>
+            </article>
           ))}
         </div>
-      </section>
-    )}
 
-    <!-- CTA Final -->
-    <section class="bg-slate-900 rounded-2xl p-8 md:p-12 text-center">
-      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
-        ¿Necesitas {product.title.toLowerCase()}?
-      </h2>
-      <p class="text-slate-300 mb-8 max-w-xl mx-auto">
-        Presupuesto personalizado en 24h. Visita técnica gratuita. Garantía de {product.technicalSpecs.garantiaFabrica}.
-      </p>
-      <div class="flex flex-wrap justify-center gap-4">
-        <a href="tel:934850085" class="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-500 transition">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
-          </svg>
-          934 850 085
-        </a>
-        <a href="mailto:ventas@disstands.com" class="inline-flex items-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition">
-          ventas@disstands.com
-        </a>
       </div>
     </section>
+  )}
 
-  </main>
+  <!-- CTA Final (mismo estilo que homepage) -->
+  <section class="py-20 bg-gray-50 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="bg-slate-900 rounded-3xl p-8 md:p-16 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12 text-center md:text-left shadow-2xl shadow-slate-900/20">
+        
+        <!-- Patrón decorativo -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none">
+          <svg class="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M0 100 C 20 0 50 0 100 100 Z" fill="white" />
+          </svg>
+        </div>
+
+        <div class="relative z-10 max-w-2xl">
+          <span class="text-green-400 font-bold tracking-widest uppercase text-xs mb-2 block">
+            Presupuesto en 24h
+          </span>
+          <h2 class="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">
+            ¿Necesitas {product.title.toLowerCase()}?
+          </h2>
+          <p class="text-slate-300 text-lg mb-0">
+            Visita técnica gratuita. Garantía de {product.technicalSpecs.garantiaFabrica}. Material disponible en stock.
+          </p>
+        </div>
+
+        <div class="relative z-10 flex flex-col gap-4 w-full md:w-auto shrink-0">
+          <a href="tel:934850085" class="bg-green-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-green-500 transition shadow-lg shadow-green-900/50 flex items-center justify-center gap-3 transform hover:scale-105 duration-200 w-full md:w-auto">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+            </svg>
+            <span>934 850 085</span>
+          </a>
+
+          <a href="mailto:ventas@disstands.com" class="bg-white/10 text-white border border-white/20 px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition flex items-center justify-center gap-3 backdrop-blur-sm w-full md:w-auto">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+            </svg>
+            <span>ventas@disstands.com</span>
+          </a>
+          
+          <p class="text-xs text-gray-500 text-center mt-2">
+            Lunes a Viernes de 9:00 a 18:00
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
 
   <!-- Schema markup -->
   <script type="application/ld+json" set:html={JSON.stringify({
